@@ -1,0 +1,1310 @@
+# This Python 3 environment comes with many helpful analytics libraries installed
+# It is defined by the kaggle/python Docker image: https://github.com/kaggle/docker-python
+# For example, here's several helpful packages to load
+​
+import numpy as np # linear algebra
+import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+​
+# Input data files are available in the read-only "../input/" directory
+# For example, running this (by clicking run or pressing Shift+Enter) will list all files under the input directory
+​
+import os
+for dirname, _, filenames in os.walk('/kaggle/input/kaggle/input/Electric-vehicle-population-data-washington-us/Electric_Vehicle_Population_Data.csv'):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+​
+# You can write up to 20GB to the current directory (/kaggle/working/) that gets preserved as output when you create a version using "Save & Run All" 
+# You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
+add Codeadd Markdown
+df = pd.read_csv("/kaggle/input/electric-vehicle-population-data-washington-us/Electric_Vehicle_Population_Data.csv")
+display(df.head())
+display(df.shape)
+display(df.columns)
+display(df.info())
+display(df.isna().sum())
+display(df.describe())
+VIN (1-10)	County	City	State	Postal Code	Model Year	Make	Model	Electric Vehicle Type	Clean Alternative Fuel Vehicle (CAFV) Eligibility	Electric Range	Base MSRP	Legislative District	DOL Vehicle ID	Vehicle Location	Electric Utility	2020 Census Tract
+0	5YJ3E1EB2J	Suffolk	Suffolk	VA	23435.0	2018	TESLA	MODEL 3	Battery Electric Vehicle (BEV)	Clean Alternative Fuel Vehicle Eligible	215	0	NaN	476647986	POINT (-76.42443 36.8752)	NaN	5.180008e+10
+1	5YJ3E1ECXL	Yakima	Yakima	WA	98908.0	2020	TESLA	MODEL 3	Battery Electric Vehicle (BEV)	Clean Alternative Fuel Vehicle Eligible	308	0	14.0	103490145	POINT (-120.56916 46.58514)	PACIFICORP	5.307700e+10
+2	WA1LAAGE7M	Yakima	Yakima	WA	98908.0	2021	AUDI	E-TRON	Battery Electric Vehicle (BEV)	Clean Alternative Fuel Vehicle Eligible	222	0	14.0	144941534	POINT (-120.56916 46.58514)	PACIFICORP	5.307700e+10
+3	5YJ3E1EA1K	Danville	Danville	VA	24541.0	2019	TESLA	MODEL 3	Battery Electric Vehicle (BEV)	Clean Alternative Fuel Vehicle Eligible	220	0	NaN	168513922	POINT (-79.4172 36.58598)	NaN	5.159000e+10
+4	1FADP5CU9E	Norfolk	Norfolk	VA	23518.0	2014	FORD	C-MAX	Plug-in Hybrid Electric Vehicle (PHEV)	Not eligible due to low battery range	19	0	NaN	150749378	POINT (-76.21549 36.92478)	NaN	5.171001e+10
+(121978, 17)
+Index(['VIN (1-10)', 'County', 'City', 'State', 'Postal Code', 'Model Year',
+       'Make', 'Model', 'Electric Vehicle Type',
+       'Clean Alternative Fuel Vehicle (CAFV) Eligibility', 'Electric Range',
+       'Base MSRP', 'Legislative District', 'DOL Vehicle ID',
+       'Vehicle Location', 'Electric Utility', '2020 Census Tract'],
+      dtype='object')
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 121978 entries, 0 to 121977
+Data columns (total 17 columns):
+ #   Column                                             Non-Null Count   Dtype  
+---  ------                                             --------------   -----  
+ 0   VIN (1-10)                                         121978 non-null  object 
+ 1   County                                             121976 non-null  object 
+ 2   City                                               121976 non-null  object 
+ 3   State                                              121978 non-null  object 
+ 4   Postal Code                                        121976 non-null  float64
+ 5   Model Year                                         121978 non-null  int64  
+ 6   Make                                               121978 non-null  object 
+ 7   Model                                              121874 non-null  object 
+ 8   Electric Vehicle Type                              121978 non-null  object 
+ 9   Clean Alternative Fuel Vehicle (CAFV) Eligibility  121978 non-null  object 
+ 10  Electric Range                                     121978 non-null  int64  
+ 11  Base MSRP                                          121978 non-null  int64  
+ 12  Legislative District                               121681 non-null  float64
+ 13  DOL Vehicle ID                                     121978 non-null  int64  
+ 14  Vehicle Location                                   121946 non-null  object 
+ 15  Electric Utility                                   121509 non-null  object 
+ 16  2020 Census Tract                                  121976 non-null  float64
+dtypes: float64(3), int64(4), object(10)
+memory usage: 15.8+ MB
+None
+VIN (1-10)                                             0
+County                                                 2
+City                                                   2
+State                                                  0
+Postal Code                                            2
+Model Year                                             0
+Make                                                   0
+Model                                                104
+Electric Vehicle Type                                  0
+Clean Alternative Fuel Vehicle (CAFV) Eligibility      0
+Electric Range                                         0
+Base MSRP                                              0
+Legislative District                                 297
+DOL Vehicle ID                                         0
+Vehicle Location                                      32
+Electric Utility                                     469
+2020 Census Tract                                      2
+dtype: int64
+Postal Code	Model Year	Electric Range	Base MSRP	Legislative District	DOL Vehicle ID	2020 Census Tract
+count	121976.000000	121978.00000	121978.000000	121978.000000	121681.000000	1.219780e+05	1.219760e+05
+mean	98159.128451	2019.30890	81.301407	1627.059798	29.738760	2.029409e+08	5.297007e+10
+std	2602.756790	2.95635	100.890849	10267.478923	14.737141	8.979138e+07	1.659161e+09
+min	1730.000000	1997.00000	0.000000	0.000000	1.000000	4.385000e+03	1.081042e+09
+25%	98052.000000	2018.00000	0.000000	0.000000	18.000000	1.523397e+08	5.303301e+10
+50%	98121.000000	2020.00000	25.000000	0.000000	34.000000	1.967532e+08	5.303303e+10
+75%	98370.000000	2022.00000	200.000000	0.000000	43.000000	2.258338e+08	5.305307e+10
+max	99701.000000	2023.00000	337.000000	845000.000000	49.000000	4.792548e+08	5.603300e+10
+add Codeadd Markdown
+import missingno 
+missingno.matrix(df)
+<AxesSubplot:>
+
+add Codeadd Markdown
+# Count the number of unique values in each column
+num_counties = df["County"].nunique()
+num_cities = df["City"].nunique()
+num_states = df["State"].nunique()
+​
+# Print the results
+print("Number of unique counties:", num_counties)
+print("Number of unique cities:", num_cities)
+print("Number of unique states:", num_states)
+Number of unique counties: 167
+Number of unique cities: 647
+Number of unique states: 44
+add Codeadd Markdown
+#print sum and values of categorical DAta
+#define categorical columns
+columns_cat = [ 'County', 'City', 'State','Make', 'Model','Electric Vehicle Type',
+                'Clean Alternative Fuel Vehicle (CAFV) Eligibility','Electric Utility']
+#print
+for i in columns_cat:
+    print(i)
+    print("****")
+    print('unique: ', df.loc[:,i].unique())
+    print('unique sum: ', len(df.loc[:,i].unique()))
+    print("****************************************************************************************")
+County
+****
+unique:  ['Suffolk' 'Yakima' 'Danville' 'Norfolk' 'Thurston' 'Snohomish' 'King'
+ 'Kittitas' 'Chelan' 'Kitsap' 'Skagit' 'DeKalb' 'Grant' 'Garfield'
+ 'Walla Walla' 'Whitman' 'Island' 'Oldham' 'Santa Cruz' 'Douglas'
+ 'Honolulu' 'Spokane' 'Stevens' 'Rock Island' 'Howard' 'Clark' 'Pierce'
+ 'Whatcom' 'Cowlitz' 'Klickitat' 'Benton' 'Skamania' 'Clallam' 'San Juan'
+ 'Franklin' 'Pacific' 'Jefferson' 'Mason' 'Lewis' 'Asotin' 'Grays Harbor'
+ 'Calvert' 'San Bernardino' 'Pend Oreille' 'Okanogan' 'Adams' 'Fairfax'
+ 'Columbia' 'Bexar' 'Monterey' 'District of Columbia' 'San Diego' 'Ferry'
+ 'Wahkiakum' 'Okaloosa' nan 'Sedgwick' 'El Paso' 'St. Clair' 'New London'
+ 'Randolph' 'Salt Lake' 'Cumberland' 'Monroe' 'Chesapeake' 'Los Angeles'
+ 'Santa Clara' 'Orange' 'Lincoln' 'Kern' 'Contra Costa' 'Camden' 'Vernon'
+ 'Frederick' 'Carroll' 'Maricopa' 'Newport News' 'Cape May' 'Bell'
+ 'Laramie' 'Sarpy' 'Alexandria' 'St. Louis' 'Riverside' 'Coryell'
+ "St. Mary's" 'Cook' 'Anne Arundel' 'Sonoma' 'Arapahoe' 'Virginia Beach'
+ 'Galveston' 'Montgomery' "Prince George's" 'Harrison' 'Madison'
+ 'San Mateo' 'Rockdale' 'Moore' 'Solano' 'Louisa' 'Beaufort' 'Plaquemines'
+ 'Leavenworth' 'Marin' 'Wichita' 'Bartow' 'Santa Barbara'
+ 'Fairbanks North Star' 'Onslow' 'Williamson' 'Loudoun' 'Doña Ana' 'Lake'
+ 'Sumter' 'Kent' 'Sheridan' 'Washington' 'Alameda' 'Houston' 'Geary'
+ 'Collin' 'Hamilton' 'Wayne' 'New Haven' 'Denton' 'Platte' 'Allen'
+ 'Sarasota' 'Sacramento' 'Dorchester' 'Stafford' 'Richmond' 'Saratoga'
+ 'Polk' 'Pulaski' 'Dallas' 'Charleston' 'Multnomah' 'Ventura' 'Rockingham'
+ 'Boulder' 'Harris' 'Napa' 'Arlington' 'St. Tammany' 'Kings' 'Hennepin'
+ 'Goochland' 'Nassau' 'Charles' 'Burlington' 'Kootenai' 'Allegheny'
+ 'Essex' 'Newport' 'Portsmouth' 'Middlesex' 'Elmore' 'Hillsborough'
+ 'Las Animas' 'Kauai' 'Jackson' 'Larimer' 'Ray' 'Carteret' 'Hoke' 'Lee']
+unique sum:  168
+****************************************************************************************
+City
+****
+unique:  ['Suffolk' 'Yakima' 'Danville' 'Norfolk' 'Olympia' 'Tenino' 'Bothell'
+ 'Seattle' 'Cle Elum' 'Snohomish' 'Leavenworth' 'Kirkland' 'Port Orchard'
+ 'Lake Stevens' 'Mount Vernon' 'Decatur' 'Moses Lake' 'Anacortes'
+ 'Pomeroy' 'Walla Walla' 'Bow' 'Ronald' 'Pullman' 'Gig Harbor' 'Yelm'
+ 'Poulsbo' 'Tumwater' 'Langley' 'Selah' 'Goshen' 'Sedro Woolley'
+ 'Cashmere' 'Marysville' 'Woodinville' 'Wenatchee' 'Lacey' 'Bremerton'
+ 'Redmond' 'Lynnwood' 'Santa Cruz' 'Everett' 'Edmonds' 'East Wenatchee'
+ 'Mukilteo' 'Aiea' 'Spokane' 'Clinton' 'Cheney' 'Chelan' 'Silverdale'
+ 'Hunters' 'Rock Island' 'Dayton' 'Union Gap' 'North Las Vegas' 'Palouse'
+ 'Colville' 'Renton' 'Bainbridge Island' 'Suquamish' 'Monroe' 'Bellevue'
+ 'Puyallup' 'South Hill' 'Des Moines' 'Tacoma' 'Bellingham' 'Vancouver'
+ 'Snoqualmie' 'Stanwood' 'Castle Rock' 'Kenmore' 'White Salmon'
+ 'Ridgefield' 'Duvall' 'Mercer Island' 'Federal Way' 'Maple Valley'
+ 'Spanaway' 'Richland' 'Olalla' 'Graham' 'Issaquah' 'Mill Creek'
+ 'Stevenson' 'Bonney Lake' 'Kingston' 'Burien' 'Greenacres' 'Clyde Hill'
+ 'Auburn' 'Coupeville' 'Shoreline' 'Sammamish' 'Spokane Valley' 'Ferndale'
+ 'Vashon' 'Sequim' 'Lake Tapps' 'Normandy Park' 'Eastsound' 'Pasco'
+ 'Hunts Point' 'Everson' 'Camas' 'Enumclaw' 'Grandview' 'Covington'
+ 'Steilacoom' 'Edgewood' 'Seabeck' 'Ocean Park' 'Black Diamond' 'Longview'
+ 'Carnation' 'Lakewood' 'Oak Harbor' 'Royal City' 'Fox Island' 'Malaga'
+ 'Ellensburg' 'Seatac' 'Tukwila' 'Mountlake Terrace' 'Keyport'
+ 'Port Townsend' 'Belfair' 'Silver Creek' 'Kennewick' 'Battle Ground'
+ 'Yarrow Point' 'Buckley' 'Liberty Lake' 'Clarkston' 'Brush Prairie'
+ 'Kent' 'Sedro-Woolley' 'Shelton' 'Port Angeles' 'Newcastle' 'Waldron'
+ 'Freeland' 'Oakville' 'Ocean Shores' 'Rochester' 'Indianola' 'Arlington'
+ 'Manson' 'Milton' 'Washougal' 'Elk' 'Burbank' 'Mead' 'Chehalis'
+ 'Parkland' 'Burlington' 'Chesapeake Beach' 'Orting' 'Centralia'
+ 'Toppenish' 'Fort Irwin' 'Medical Lake' 'Chimacum' 'La Center' 'Usk'
+ 'Camano Island' 'Beaux Arts' 'Tonasket' 'Hoodsport' 'Brier' 'Aberdeen'
+ 'Medina' 'Algona' 'Montesano' 'North Bend' 'Olga' 'Dupont'
+ 'Joint Base Lewis Mcchord' 'Fife' 'Othello' 'University Place'
+ 'Lake Forest Park' 'Morton' 'Winthrop' 'Veradale' 'Deer Harbor' 'Lynden'
+ 'Nine Mile Falls' 'Sumner' 'Elma' 'Woodway' 'Newman Lake' 'Ravensdale'
+ 'Alexandria' 'Rice' 'Woodland' 'Fircrest' 'Roslyn' 'Colbert' 'Grapeview'
+ 'Waitsburg' 'Friday Harbor' 'Menlo' 'West Richland' 'Ariel' 'Okanogan'
+ 'Port Ludlow' 'Lakebay' 'Quincy' 'Hansville' 'Benton City' 'Ephrata'
+ 'Allyn' 'Kalama' 'Westport' 'Husum' 'Lopez Island' 'Maple Falls'
+ 'Mccleary' 'Anderson Island' 'Chattaroy' 'Sultan' 'Soap Lake' 'Newport'
+ 'Preston' 'Concrete' 'Burke' 'Custer' 'Blaine' 'Prosser' 'San Antonio'
+ 'Carmel By The Sea' 'Naches' 'Omak' 'Onalaska' 'Sunnyside' 'Mattawa'
+ 'Washington' 'Valley' 'Long Beach' 'San Diego' 'Fall City' 'Zillah' 'Roy'
+ 'Ilwaco' 'Eatonville' 'Amboy' 'Tahuya' 'Gold Bar' 'Deer Park' 'Raymond'
+ 'Loon Lake' 'Republic' 'Toledo' 'Quilcene' 'Fairchild Air Force Base'
+ 'Hoquiam' 'La Conner' 'Felts Mills' 'Otis Orchards' 'Union' 'Pacific'
+ 'Winlock' 'Cathlamet' 'Mossyrock' 'Twisp' 'Fort Walton Beach' 'Snowden'
+ 'Underwood' 'Silverlake' 'Skamokawa' 'Outlook' 'Nordland' 'Granite Falls'
+ nan 'College Place' 'Entiat' 'Colfax' 'Lyle' 'Derby' 'Mabton' 'Brinnon'
+ 'Moxee' 'Bay Center' 'Smith Creek' 'Naselle' 'Uniontown' 'Plymouth'
+ 'Valleyford' 'Pateros' 'Cusick' 'Lummi Island' 'Mazama' 'El Paso'
+ 'Snoqualmie Pass' 'Belleville' 'Waterford' 'Carson' 'Kelso' 'Asotin'
+ 'Chewelah' 'Asheboro' 'Salt Lake City' 'Coulee City' 'Trout Lake' 'Forks'
+ 'Fort Bragg' 'Goldendale' 'Rockford' 'Key West' 'Chesapeake' 'Vader'
+ 'Port Hadlock' 'Ashford' 'San Jose' 'Point Roberts' 'Edwall' 'Ritzville'
+ 'Santa Ana' 'Evans' 'Touchet' 'Dallesport' 'Packwood' 'Harrington'
+ 'Ridgecrest' 'Laughlin' 'Kettle Falls' 'Cosmopolis' 'Pacific Beach'
+ 'Wilbur' 'Toutle' 'Lincoln' 'Latah' 'Airway Heights' 'Sekiu'
+ 'Springfield' 'Pittsburg' 'Ruston' 'Rainier' 'Davenport' 'Mineral'
+ 'Haddonfield' 'Yacolt' 'Cinebar' 'Vantage' 'Greenbank' 'Orondo'
+ 'Kittitas' 'Ethel' 'Leesville' 'Easton' 'Frederick' 'Westminster'
+ 'Riverside' 'Peshastin' 'Chandler' 'Mesa' 'Longbranch' 'Brewster' 'Omaha'
+ 'Palisades' 'Newport News' 'South Prairie' 'North Cove' 'Nahcotta'
+ 'Orcas Is' 'Avalon' 'Killeen' 'Klickitat' 'Inchelium' 'Cupertino'
+ 'Moclips' 'Walla Walla Co' 'Cheyenne' 'Phoenix' 'Oroville' 'Frances'
+ 'Deming' 'Saint Louis' 'Menifee' 'Harker Heights' 'Curtis' 'Gatesville'
+ 'Thorp' 'South Cle Elum' 'Twentynine Palms' 'Lancaster' 'Baring'
+ 'Nespelem' 'Southworth' 'Lexington Park' 'Colorado Springs' 'Skokie'
+ 'Glacier' 'Edgewater' 'Santa Rosa' 'Chinook' 'Wilkeson' 'Bz Corner'
+ 'Copalis Crossing' 'Englewood' 'Virginia Beach' 'Maryhill' 'Dickinson'
+ 'Germantown' 'Springdale' 'Marblemount' 'Vaughn' 'Rosalia' 'Tumtum'
+ 'Hemet' 'Reardan' 'South Range' 'Odessa' 'Oysterville'
+ 'Andrews Air Force Base' 'Randle' 'Wahkiacus' 'Mcchord Afb' 'Surfside'
+ 'Buena Park' 'Mascoutah' 'Seaview' 'Sprague' 'Acme' 'Biloxi'
+ 'Saint Jacob' 'Carbonado' 'Glenwood' 'Connell' 'Skykomish' 'San Mateo'
+ 'Waterville' 'Chevy Chase' 'Cougar' 'Conyers' 'Southern Pines' 'Wildomar'
+ 'Watertown' 'Benicia' 'Bumpass' 'Tekoa' 'Neah Bay' 'Okatie'
+ 'Belle Chasse' 'South Bend' 'Lebam' 'Darrington' 'Shaw Island'
+ 'Silver Lake' 'Grayland' 'Roosevelt' 'Lansing' 'Silver Spring' 'Mica'
+ 'North Bonneville' 'Granger' 'Seven Bays' 'Fruitland' 'Spangle' 'Clayton'
+ 'Scottsdale' 'Lind' 'Grand Coulee' 'Wapato' 'San Rafael' 'White Swan'
+ 'Wichita Falls' 'Rosburg' 'Adairsville' 'Norristown' 'Clearlake' 'Colton'
+ 'Electric City' 'Hamilton' 'Kapowsin' 'Lopez Is' 'Tieton' 'Tempe'
+ 'Annapolis' 'Hatton' 'Nooksack' 'Eltopia' 'Las Vegas' 'Tulalip'
+ 'Fayetteville' 'Murdock' 'Gardena' 'Salkum' 'Lompoc' 'Gambrills'
+ 'Oceanside' 'Sumas' 'Malott' 'Palo Alto' 'Fairbanks' 'Mccutcheon Field'
+ 'Mountain View' 'Port Gamble' 'Cedar Park' 'Carlton' 'Aldie' 'Las Cruces'
+ 'Fort Campbell' 'Alderdale' 'Odenton' 'Curlew' 'Hartline' 'Bridgeport'
+ 'Warden' 'Highland Park' 'Marlin' 'Addy' 'Amanda Park' 'Sonoma' 'Sumter'
+ 'Dover' 'Methow' 'Vienna' 'Coulee Dam' 'Lilliwaup' 'Fort Leavenworth'
+ 'Mansfield' 'Bridgeport Bar' 'Sheridan' 'Carrolls' 'Rosamond'
+ 'Keedysville' 'Garfield' 'Chula Vista' 'Berkeley' 'Warner Robins'
+ 'Grays River' 'Mystic' 'Herndon' 'Junction City' 'Bingen' 'Satsop'
+ 'Endicott' 'Santa Clara' 'Beaver' 'Prosper' 'Goodyear' 'Coronado'
+ 'Taholah' 'Travis Afb' 'Cincinnati' 'Copalis Beach' 'Glenoma' 'Tokeland'
+ 'Goldsboro' 'Madison' 'Tavares' 'Little Elm' 'Platte City' 'Artondale'
+ 'St John' 'Ford' 'Lamont' 'Wishram' 'Fort Wayne' 'Fremont' 'Honolulu'
+ 'Los Angeles' 'Alhambra' 'Sarasota' 'Matlock' 'Sacramento' 'Anthem'
+ 'Newport Beach' 'Lincoln City' 'Summerville' 'Stafford' 'Fredericksburg'
+ 'Rockport' 'Staten Island' 'Stratford' 'Greenfield Center'
+ 'Mechanicsburg' 'Pe Ell' 'Salem' 'Gurnee' 'Little Rock' 'Dallas'
+ 'Charleston Afb' 'Portland' 'Ventura' 'Portsmouth' 'Canoga Park'
+ 'Upper Marlboro' 'Longmont' 'Houston' 'Napa' 'Irvine' 'Potomac'
+ 'Deer Meadows' 'Aurora' 'Montgomery' 'Kenn' 'Slidell' 'Lemoore'
+ 'Minneapolis' 'Old Lyme' 'Pawcatuck' 'San Clemente' 'Gifford' 'Henrico'
+ 'Jericho' 'Hughesville' 'Joint Base Mdl' 'Ewa Beach' 'Vacaville' 'Worley'
+ 'Pros' 'Wexford' 'Newark' 'Apple Valley' 'Middletown' 'Ryderwood'
+ 'Fort George G Meade' 'Bucoda' 'Mount Pleasant' 'Gaithersburg' 'Medford'
+ 'Hanscom Afb' 'Bedford' 'Fairfield' 'Chelmsford' 'Arnold'
+ 'Mountain Home Afb' 'Lithia' 'Seaside' 'Quinault' 'Fort Belvoir'
+ 'Trinidad' 'Kekaha' 'Altus' 'Groton' 'Timnath' 'Rayville' 'Moraga'
+ 'Clarksville' 'Augusta' 'Beaufort' 'Raeford' 'Clallam Bay' 'Prescott'
+ 'Smiths Station']
+unique sum:  648
+****************************************************************************************
+State
+****
+unique:  ['VA' 'WA' 'GA' 'KY' 'CA' 'HI' 'IL' 'MD' 'NV' 'TX' 'DC' 'NY' 'FL' 'BC'
+ 'KS' 'CT' 'NC' 'UT' 'NJ' 'LA' 'AZ' 'NE' 'WY' 'MO' 'CO' 'WI' 'MS' 'SC'
+ 'PA' 'AK' 'NM' 'TN' 'DE' 'OH' 'IN' 'OR' 'AR' 'NH' 'AL' 'MN' 'ID' 'RI'
+ 'MA' 'OK']
+unique sum:  44
+****************************************************************************************
+Make
+****
+unique:  ['TESLA' 'AUDI' 'FORD' 'NISSAN' 'CHEVROLET' 'KIA' 'FIAT' 'BMW' 'HYUNDAI'
+ 'VOLVO' 'CHRYSLER' 'JEEP' 'TOYOTA' 'RIVIAN' 'VOLKSWAGEN' 'MERCEDES-BENZ'
+ 'SMART' 'MITSUBISHI' 'PORSCHE' 'POLESTAR' 'MINI' 'HONDA' 'LINCOLN'
+ 'GENESIS' 'JAGUAR' 'LUCID MOTORS' 'TH!NK' 'LEXUS' 'CADILLAC' 'SUBARU'
+ 'LAND ROVER' 'FISKER' 'AZURE DYNAMICS' 'WHEEGO ELECTRIC CARS' 'BENTLEY']
+unique sum:  35
+****************************************************************************************
+Model
+****
+unique:  ['MODEL 3' 'E-TRON' 'C-MAX' 'LEAF' 'VOLT' 'MODEL S' 'MODEL X' 'BOLT EV'
+ 'NIRO' '500' 'X5' 'MODEL Y' '330E' 'IONIQ' 'XC60' 'PACIFICA' 'Q5' 'SOUL'
+ 'A3' 'WRANGLER' 'Q5 E' 'XC90' 'PRIUS PRIME' 'SPORTAGE' 'FUSION' 'SOUL EV'
+ 'EV6' 'R1S' 'E-GOLF' 'BOLT EUV' 'S-CLASS' 'F-150' 'I8' 'FORTWO' 'XC40'
+ 'MUSTANG MACH-E' 'SPARK' 'ID.4' 'I3' 'RAV4 PRIME' 'OUTLANDER'
+ 'PRIUS PLUG-IN' 'EQE-CLASS SEDAN' 'I4' 'SONATA' 'R1T' 'ROADSTER' 'TAYCAN'
+ 'PS2' 'HARDTOP' 'CLARITY' nan '530E' 'KONA ELECTRIC' 'COUNTRYMAN'
+ 'B-CLASS' 'FOCUS' 'GLC-CLASS' 'CORSAIR' 'GV60' 'IONIQ 5' 'PANAMERA' 'C40'
+ 'CAYENNE' 'ESCAPE' 'I-PACE' 'TRANSIT' 'GRAND CHEROKEE' 'X3' 'EQB-CLASS'
+ 'OPTIMA' 'Q4' 'SORENTO' 'EQS-CLASS SUV' 'EQS-CLASS SEDAN' 'IX'
+ 'E-TRON GT' 'LUCID AIR' 'FORTWO ELECTRIC DRIVE' 'S60' 'I-MIEV' 'CITY'
+ 'KONA' 'NX' 'E-TRON SPORTBACK' 'EQ FORTWO' 'ELR' 'AVIATOR' 'TUCSON' 'V60'
+ 'CROSSTREK' 'SOLTERRA' 'BZ4X' 'SANTA FE' 'RAV4' 'RANGER' 'S90' 'C-CLASS'
+ 'GLE-CLASS' 'RS E-TRON GT' 'ARIYA' 'RANGE ROVER SPORT' '740E' 'CT6'
+ 'RANGE ROVER' 'ACCORD' 'A8 E' 'G80' 'KARMA' 'TRANSIT CONNECT ELECTRIC'
+ '745E' 'EDV' 'A7' 'S-10 PICKUP' 'WHEEGO' 'LYRIQ' '745LE' 'BENTAYGA'
+ 'FLYING SPUR' '918']
+unique sum:  120
+****************************************************************************************
+Electric Vehicle Type
+****
+unique:  ['Battery Electric Vehicle (BEV)' 'Plug-in Hybrid Electric Vehicle (PHEV)']
+unique sum:  2
+****************************************************************************************
+Clean Alternative Fuel Vehicle (CAFV) Eligibility
+****
+unique:  ['Clean Alternative Fuel Vehicle Eligible'
+ 'Not eligible due to low battery range'
+ 'Eligibility unknown as battery range has not been researched']
+unique sum:  3
+****************************************************************************************
+Electric Utility
+****
+unique:  [nan 'PACIFICORP' 'PUGET SOUND ENERGY INC'
+ 'CITY OF SEATTLE - (WA)|CITY OF TACOMA - (WA)'
+ 'PUD NO 1 OF CHELAN COUNTY'
+ 'PUGET SOUND ENERGY INC||CITY OF TACOMA - (WA)'
+ 'PUD NO 2 OF GRANT COUNTY' 'AVISTA CORP' 'PUD NO 1 OF DOUGLAS COUNTY'
+ 'MODERN ELECTRIC WATER COMPANY' 'CITY OF CHENEY - (WA)'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF TACOMA - (WA)||PENINSULA LIGHT COMPANY'
+ 'PUGET SOUND ENERGY INC||PUD NO 1 OF WHATCOM COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||PUD NO 1 OF CLARK COUNTY - (WA)'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF TACOMA - (WA)||ELMHURST MUTUAL POWER & LIGHT CO|PENINSULA LIGHT COMPANY'
+ 'BONNEVILLE POWER ADMINISTRATION||PUD 1 OF SNOHOMISH COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||PUD NO 1 OF COWLITZ COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||PUD NO 1 OF KLICKITAT COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||AVISTA CORP||INLAND POWER & LIGHT COMPANY'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF RICHLAND - (WA)'
+ 'BONNEVILLE POWER ADMINISTRATION||PUD NO 1 OF SKAMANIA CO'
+ 'BONNEVILLE POWER ADMINISTRATION||PUD NO 1 OF CLALLAM COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||ORCAS POWER & LIGHT COOP'
+ 'BONNEVILLE POWER ADMINISTRATION||PUD NO 1 OF FRANKLIN COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||PACIFICORP||BENTON RURAL ELECTRIC ASSN'
+ 'BONNEVILLE POWER ADMINISTRATION||TOWN OF STEILACOOM|CITY OF TACOMA - (WA)||PENINSULA LIGHT COMPANY'
+ 'BONNEVILLE POWER ADMINISTRATION||PUD NO 2 OF PACIFIC COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||PUGET SOUND ENERGY INC||PUD NO 1 OF JEFFERSON COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF TACOMA - (WA)||PUD NO 3 OF MASON COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF TACOMA - (WA)||PUD NO 1 OF LEWIS COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||PUD NO 1 OF BENTON COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||INLAND POWER & LIGHT COMPANY'
+ 'BONNEVILLE POWER ADMINISTRATION||PUD NO 1 OF ASOTIN COUNTY||INLAND POWER & LIGHT COMPANY'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF PORT ANGELES - (WA)'
+ 'BONNEVILLE POWER ADMINISTRATION||PUD NO 1 OF GRAYS HARBOR COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF MILTON - (WA)|CITY OF TACOMA - (WA)'
+ 'BONNEVILLE POWER ADMINISTRATION||PACIFICORP||PUD NO 1 OF CLARK COUNTY - (WA)'
+ 'BONNEVILLE POWER ADMINISTRATION||VERA IRRIGATION DISTRICT #15'
+ 'BONNEVILLE POWER ADMINISTRATION||COLUMBIA RURAL ELEC ASSN, INC'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF TACOMA - (WA)||PARKLAND LIGHT & WATER COMPANY|PENINSULA LIGHT COMPANY'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF TACOMA - (WA)||LAKEVIEW LIGHT & POWER|PENINSULA LIGHT COMPANY'
+ 'PUD NO 1 OF PEND OREILLE COUNTY' 'PUD NO 1 OF OKANOGAN COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF TACOMA - (WA)||PUD NO 1 OF MASON COUNTY'
+ 'CITY OF TACOMA - (WA)||TANNER ELECTRIC COOP'
+ 'BONNEVILLE POWER ADMINISTRATION||AVISTA CORP||BIG BEND ELECTRIC COOP, INC'
+ 'OKANOGAN COUNTY ELEC COOP, INC'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF ELLENSBURG - (WA)'
+ 'BONNEVILLE POWER ADMINISTRATION||AVISTA CORP||PUD NO 1 OF ASOTIN COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||PACIFICORP||COLUMBIA RURAL ELEC ASSN, INC'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF CENTRALIA - (WA)|CITY OF TACOMA - (WA)'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF MCCLEARY - (WA)'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF TACOMA - (WA)||BENTON RURAL ELECTRIC ASSN|PENINSULA LIGHT COMPANY'
+ 'CITY OF BLAINE - (WA)||PUD NO 1 OF WHATCOM COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF TACOMA - (WA)||OHOP MUTUAL LIGHT COMPANY, INC|PENINSULA LIGHT COMPANY'
+ 'BONNEVILLE POWER ADMINISTRATION||PUD NO 1 OF FERRY COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||PUD NO 1 OF WAHKIAKUM COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||PUD NO 1 OF MASON COUNTY|PUD NO 1 OF JEFFERSON COUNTY'
+ 'PUD NO 1 OF WHATCOM COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||BIG BEND ELECTRIC COOP, INC'
+ 'BONNEVILLE POWER ADMINISTRATION||TOWN OF RUSTON - (WA)|CITY OF TACOMA - (WA)||PENINSULA LIGHT COMPANY'
+ 'BONNEVILLE POWER ADMINISTRATION||PUD NO 1 OF KITTITAS COUNTY'
+ 'CITY OF TACOMA - (WA)'
+ 'BONNEVILLE POWER ADMINISTRATION||NESPELEM VALLEY ELEC COOP, INC'
+ 'BONNEVILLE POWER ADMINISTRATION||TOWN OF EATONVILLE - (WA)|CITY OF TACOMA - (WA)'
+ 'PORTLAND GENERAL ELECTRIC CO'
+ 'BONNEVILLE POWER ADMINISTRATION||BENTON RURAL ELECTRIC ASSN'
+ 'BONNEVILLE POWER ADMINISTRATION||PUD NO 1 OF ASOTIN COUNTY'
+ 'CITY OF CHEWELAH'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF COULEE DAM - (WA)'
+ 'CITY OF SUMAS - (WA)||PUD NO 1 OF WHATCOM COUNTY'
+ 'BONNEVILLE POWER ADMINISTRATION||CITY OF TACOMA - (WA)||ALDER MUTUAL LIGHT CO, INC|PENINSULA LIGHT COMPANY'
+ 'BONNEVILLE POWER ADMINISTRATION||PENINSULA LIGHT COMPANY'
+ 'CITY OF SEATTLE - (WA)']
+unique sum:  74
+****************************************************************************************
+add Codeadd Markdown
+# Filter the data for electric vehicles
+electric_vehicles = df[df['Electric Vehicle Type'].isin(['BEV', 'PHEV'])]
+​
+# Group the data by county, city, and state and count the number of vehicles in each group
+counts = electric_vehicles.groupby(['County', 'City', 'State']).size().reset_index(name='Count')
+add Codeadd Markdown
+import matplotlib.pyplot as plt
+# group the data by county, city, and state and count the number of electric vehicles in each group
+grouped = df.groupby(['County', 'City', 'State']).size().reset_index(name='Count')
+​
+# sort the groups in descending order based on the count of electric vehicles
+sorted_groups = grouped.sort_values('Count', ascending=False)
+​
+# take the top 10 groups with the highest number of registered electric vehicles
+top_10_groups = sorted_groups.head(10)
+# create a bar plot of the top 10 groups
+plt.barh(y=top_10_groups['County'] + ', ' + top_10_groups['City'] + ', ' + top_10_groups['State'], width=top_10_groups['Count'])
+plt.xlabel('Number of Registered Electric Vehicles')
+plt.ylabel('County, City, State')
+plt.title('Top 10 Counties, Cities, and States with the Highest Number of Registered Electric Vehicles')
+plt.tight_layout()
+plt.show()
+
+add Codeadd Markdown
+Type Markdown and LaTeX:  α2
+ 
+add Codeadd Markdown
+What is the distribution of electric vehicle types in the dataset?
+
+add Codeadd Markdown
+# Calculate the value counts of electric vehicle types
+ev_types = df["Electric Vehicle Type"].value_counts()
+​
+# Print the results
+print(ev_types)
+Battery Electric Vehicle (BEV)            94118
+Plug-in Hybrid Electric Vehicle (PHEV)    27860
+Name: Electric Vehicle Type, dtype: int64
+add Codeadd Markdown
+Which vehicle make and model is the most popular among electric vehicle owners?
+
+add Codeadd Markdown
+electric_df = df[df['Electric Vehicle Type'] != 'Plug-in Hybrid Electric Vehicle']
+​
+# Count the occurrences of each make and model combination
+popular_vehicle = electric_df.groupby(['Make', 'Model']).size().reset_index(name='Count')
+​
+# Sort the results in descending order by count
+popular_vehicle = popular_vehicle.sort_values(by='Count', ascending=False)
+​
+# Print the most popular vehicle make and model
+print('The most popular electric vehicle make and model is {} {} with {} vehicles registered.'.format(
+    popular_vehicle.iloc[0]['Make'], popular_vehicle.iloc[0]['Model'], popular_vehicle.iloc[0]['Count']))
+The most popular electric vehicle make and model is TESLA MODEL 3 with 24117 vehicles registered.
+add Codeadd Markdown
+How has the number of electric vehicle registrations changed over time?
+
+add Codeadd Markdown
+# Extract the year from the Model Year column
+df['Year'] = df['Model Year'].astype(str).str[:4]
+​
+# Group the data by year and count the number of electric vehicles
+year_counts = df[df['Electric Vehicle Type'].notna()].groupby('Year').size()
+​
+# Plot the results as a line chart
+plt.plot(year_counts.index, year_counts.values)
+plt.title('Electric Vehicle Registrations Over Time')
+plt.xlabel('Year')
+plt.xticks(rotation=90)
+​
+plt.ylabel('Number of Registrations')
+plt.show()
+
+add Codeadd Markdown
+**** What is the relationship between CAFV eligibility and the number of electric vehicle registrations in a particular area?
+
+add Codeadd Markdown
+# group data by county and aggregate by sum
+grouped_county = df.groupby('County')[['Electric Vehicle Type', 'Clean Alternative Fuel Vehicle (CAFV) Eligibility']].sum()
+grouped_county
+Electric Vehicle Type	Clean Alternative Fuel Vehicle (CAFV) Eligibility
+County		
+Adams	Battery Electric Vehicle (BEV)Plug-in Hybrid E...	Clean Alternative Fuel Vehicle EligibleNot eli...
+Alameda	Battery Electric Vehicle (BEV)Battery Electric...	Clean Alternative Fuel Vehicle EligibleEligibi...
+Alexandria	Plug-in Hybrid Electric Vehicle (PHEV)Plug-in ...	Not eligible due to low battery rangeClean Alt...
+Allegheny	Battery Electric Vehicle (BEV)	Clean Alternative Fuel Vehicle Eligible
+Allen	Battery Electric Vehicle (BEV)	Clean Alternative Fuel Vehicle Eligible
+...	...	...
+Whatcom	Plug-in Hybrid Electric Vehicle (PHEV)Battery ...	Not eligible due to low battery rangeEligibili...
+Whitman	Plug-in Hybrid Electric Vehicle (PHEV)Plug-in ...	Clean Alternative Fuel Vehicle EligibleNot eli...
+Wichita	Battery Electric Vehicle (BEV)Battery Electric...	Clean Alternative Fuel Vehicle EligibleClean A...
+Williamson	Plug-in Hybrid Electric Vehicle (PHEV)	Not eligible due to low battery range
+Yakima	Battery Electric Vehicle (BEV)Battery Electric...	Clean Alternative Fuel Vehicle EligibleClean A...
+167 rows × 2 columns
+
+add Codeadd Markdown
+​
+caf_counts = df['Clean Alternative Fuel Vehicle (CAFV) Eligibility'].value_counts()
+plt.bar(caf_counts.index, caf_counts.values)
+plt.title('Frequency of Clean Alternative Fuel Vehicle (CAFV) Eligibility')
+plt.xticks(rotation=90)
+plt.show()
+
+add Codeadd Markdown
+# count the frequency of each category for CAFV Eligibility
+caf_counts = df['Clean Alternative Fuel Vehicle (CAFV) Eligibility'].value_counts()
+​
+# create a pie chart for CAFV Eligibility
+plt.pie(caf_counts.values, labels=caf_counts.index, autopct='%1.1f%%')
+plt.title('Clean Alternative Fuel Vehicle(CAFV) Eligibility')
+​
+# show the plot
+plt.show()
+
+add Codeadd Markdown
+Are there any specific counties, cities, or states that have higher CAFV eligibility compared to others?
+
+add Codeadd Markdown
+# Group the data by county, city, and state and count the number of CAFV eligible vehicles in each group
+grouped_data = df.groupby(['County', 'City', 'State'])['Clean Alternative Fuel Vehicle (CAFV) Eligibility'].apply(lambda x: (x == 'Clean Alternative Fuel Vehicle Eligible').sum())
+​
+# Sort the groups in descending order based on the count of CAFV eligible vehicles
+sorted_data = grouped_data.sort_values(ascending=False)
+​
+# Print the top 10 groups with the highest count of CAFV eligible vehicles
+print(sorted_data.head(10))
+County     City       State
+King       Seattle    WA       10777
+           Bellevue   WA        3032
+           Redmond    WA        2163
+Clark      Vancouver  WA        2117
+King       Kirkland   WA        1919
+           Sammamish  WA        1695
+Thurston   Olympia    WA        1497
+King       Renton     WA        1430
+Snohomish  Bothell    WA        1252
+Pierce     Tacoma     WA        1249
+Name: Clean Alternative Fuel Vehicle (CAFV) Eligibility, dtype: int64
+add Codeadd Markdown
+​
+add Codeadd Markdown
+​
+# group the data by county, city, and state and count the number of CAFV eligible vehicles in each group
+grouped_data = df.groupby(['County', 'City', 'State'])['Clean Alternative Fuel Vehicle (CAFV) Eligibility'].apply(lambda x: (x == 'Clean Alternative Fuel Vehicle Eligible').sum())
+​
+# sort the groups in descending order based on the count of CAFV eligible vehicles
+sorted_data = grouped_data.sort_values(ascending=False)
+​
+# normalize the data by dividing by the total count of CAFV eligible vehicles
+normalized_data = sorted_data / sorted_data.sum()
+​
+# take the top 10 groups
+top_10_groups = normalized_data.head(10)
+​
+# convert the index to a list of strings
+group_labels = top_10_groups.index.map(lambda x: str(x)).tolist()
+​
+# create a horizontal bar plot of the top 10 groups
+plt.barh(y=group_labels, width=top_10_groups)
+plt.xlabel('Number of CAFV Eligible Vehicles')
+plt.ylabel('County, City, State')
+plt.title('Top 10 Groups with Most CAFV Eligible Vehicles')
+plt.show()
+
+add Codeadd Markdown
+Is there a correlation between the electric-only range of a vehicle and its popularity among electric vehicle owners?
+
+add Codeadd Markdown
+df = df[df['Electric Range'].notna()]
+df = df[df['Electric Range'] > 0]
+range_vs_type = df[['Electric Range', 'Electric Vehicle Type']]
+grouped_data = range_vs_type.groupby('Electric Vehicle Type').mean()
+plt.bar(x=grouped_data.index, height=grouped_data['Electric Range'])
+plt.xlabel('Electric Vehicle Type')
+plt.ylabel('Mean Electric-Only Range (miles)')
+plt.title('Mean Electric-Only Range by Vehicle Type')
+plt.show()
+
+add Codeadd Markdown
+What is the average age of electric vehicles in the dataset?
+
+add Codeadd Markdown
+# Calculate the age of each electric vehicle
+df['Model Year'] = df['Model Year'].astype(str)
+df['Age'] = 2023 - df['Model Year'].str[:4].astype(int)
+​
+# Calculate the average age of electric vehicles
+avg_age = df[df['Electric Vehicle Type'].str.contains('Electric')]['Age'].mean()
+​
+print(f"The average age of electric vehicles in the dataset is {avg_age:.1f} years.")
+The average age of electric vehicles in the dataset is 5.3 years.
+add Codeadd Markdown
+Are there any patterns in electric vehicle registrations based on postal code or geographic region?
+
+add Codeadd Markdown
+# group the data by postal code and count the number of electric vehicle registrations in each group
+grouped_data = df.groupby('Postal Code')['Electric Vehicle Type'].count()
+​
+# sort the groups in descending order based on the count of electric vehicle registrations
+sorted_data = grouped_data.sort_values(ascending=False)
+​
+# plot a bar chart of the top 10 postal codes with the most electric vehicle registrations
+plt.bar(sorted_data.index[:10], sorted_data.values[:10])
+plt.xlabel('Postal Code')
+plt.ylabel('Number of Electric Vehicle Registrations')
+plt.title('Top 10 Postal Codes with the Most Electric Vehicle Registrations')
+plt.show()
+
+add Codeadd Markdown
+​
+​
+# group the data by postal code and count the number of registrations in each group
+registrations_by_postal_code = df.groupby('Postal Code').size()
+​
+# plot the results as a bar chart
+registrations_by_postal_code.plot(kind='bar')
+plt.xlabel('Postal Code')
+plt.ylabel('Number of Registrations')
+plt.show()
+
+add Codeadd Markdown
+​
+add Codeadd Markdown
+how the make is distributed
+
+add Codeadd Markdown
+# count the frequency of each make
+make_counts = df['Make'].value_counts()
+​
+# create a bar chart for make
+fig = plt.figure(figsize=(10, 6))
+plt.bar(make_counts.index, make_counts.values)
+plt.title('Frequency of each Make')
+plt.xticks(rotation=90)
+plt.show()
+
+add Codeadd Markdown
+# count the frequency of each make
+state_counts = df['State'].value_counts()
+​
+# create a bar chart for make
+plt.bar(state_counts.index, state_counts.values)
+plt.title('Frequency of each Make')
+plt.xticks(rotation=90)
+plt.show()
+
+add Codeadd Markdown
+# count the frequency of each make
+state_counts = df['State'].value_counts()
+​
+# create a bar chart for make
+plt.bar(state_counts.index, state_counts.values)
+plt.title('Frequency of each Make')
+plt.xticks(rotation=90)
+plt.show()
+
+add Codeadd Markdown
+plt.boxplot(df['Base MSRP'])
+plt.title('Box Plot of Base MSRP')
+plt.ylabel('Base MSRP')
+plt.show()
+
+add Codeadd Markdown
+plt.scatter(df['Model Year'].sort_values(), df['Electric Range'])
+plt.title('Electric Range vs Model Year')
+plt.xlabel('Model Year')
+plt.xticks(rotation=90)
+plt.ylabel('Electric Range')
+plt.show()
+
+add Codeadd Markdown
+plt.hist(df['Postal Code'])
+plt.title('Histogram of Postal Code')
+plt.xlabel('Postal Code')
+plt.ylabel('Frequency')
+plt.show()
+
+add Codeadd Markdown
+import seaborn as sns
+grouped_data = df.groupby(['Make', 'City']).size().reset_index(name='Frequency')
+plt.figure(figsize=(16, 8))
+sns.barplot(x='City', y='Frequency', hue='Make', data=grouped_data)
+plt.xticks(rotation=90)
+plt.title('Make vs City')
+plt.show()
+
+add Codeadd Markdown
+state_make_counts = df.groupby(['State', 'Make']).size().reset_index(name='Frequency')
+plt.figure(figsize=(12, 6))
+sns.barplot(x='State', y='Frequency', hue='Make', data=state_make_counts)
+plt.title('Frequency of each Make by State')
+plt.xlabel('State')
+plt.ylabel('Frequency')
+plt.xticks(rotation=90)
+plt.show()
+
+add Codeadd Markdown
+city_make_counts = df.groupby(['City', 'Make']).size().reset_index(name='Frequency')
+​
+plt.figure(figsize=(12, 6))
+sns.catplot(x='City', y='Frequency', hue='Make', data=city_make_counts, kind='bar', height=6, aspect=2)
+plt.title('Frequency of each Make by City')
+plt.xlabel('City')
+plt.ylabel('Frequency')
+plt.xticks(rotation=90)
+plt.show()
+<Figure size 1200x600 with 0 Axes>
+
+add Codeadd Markdown
+​
+add Codeadd Markdown
+​
+# Group the data by make and city and count the frequency
+grouped_data = df.groupby(['Make', 'City']).size().reset_index(name='Frequency')
+​
+# Group the data by city and sum the frequency, sort in descending order, and select top 10 rows
+top_cities = grouped_data.groupby('City').sum().sort_values('Frequency', ascending=False).head(10).index
+​
+# Filter the data to keep only the top 10 cities
+grouped_data = grouped_data[grouped_data['City'].isin(top_cities)]
+​
+# Create a horizontal bar plot
+plt.figure(figsize=(12, 8))
+sns.barplot(x='Frequency', y='City', hue='Make', data=grouped_data, dodge=False)
+plt.title('Make vs City')
+plt.xlabel('Frequency')
+plt.ylabel('City')
+plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+plt.tight_layout()
+plt.show()
+
+add Codeadd Markdown
+​
+# Group the data by make and city and count the frequency
+grouped_data = df.groupby(['Make', 'County']).size().reset_index(name='Frequency')
+​
+# Group the data by city and sum the frequency, sort in descending order, and select top 10 rows
+top_cities = grouped_data.groupby('County').sum().sort_values('Frequency', ascending=False).head(10).index
+​
+# Filter the data to keep only the top 10 cities
+grouped_data = grouped_data[grouped_data['County'].isin(top_cities)]
+​
+# Create a horizontal bar plot
+plt.figure(figsize=(12, 8))
+sns.barplot(x='Frequency', y='County', hue='Make', data=grouped_data, dodge=False)
+plt.title('Make vs County')
+plt.xlabel('Frequency')
+plt.ylabel('County')
+plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+plt.tight_layout()
+plt.show()
+
+add Codeadd Markdown
+# Extract x and y variables
+x = df['Electric Range']
+y = df['Base MSRP']
+​
+# Create scatter plot
+plt.scatter(x, y)
+plt.xlabel('Electric Range')
+plt.ylabel('Base MSRP')
+plt.title('Electric Range vs. Base MSRP')
+plt.show()
+
+add Codeadd Markdown
+# create a histogram of electric range
+plt.hist(df['Electric Range'], bins=20)
+plt.title('Distribution of Electric Range')
+plt.xlabel('Electric Range')
+plt.ylabel('Frequency')
+plt.show()
+​
+# create a histogram of base MSRP
+plt.hist(df['Base MSRP'], bins=20)
+plt.title('Distribution of Base MSRP')
+plt.xlabel('Base MSRP')
+plt.ylabel('Frequency')
+plt.show()
+
+
+add Codeadd Markdown
+# group the data by Electric Range and Make columns
+df_grouped = df.groupby(['Electric Range', 'Make'])
+​
+# get the count of rows in each group
+df_counts = df_grouped.size().reset_index(name='Count')
+​
+# display the resulting DataFrame
+print(df_counts)
+     Electric Range           Make  Count
+0                 6         TOYOTA    929
+1                 8  MERCEDES-BENZ     42
+2                 9  MERCEDES-BENZ     20
+3                10  MERCEDES-BENZ    159
+4                11  MERCEDES-BENZ      3
+..              ...            ...    ...
+152             293          TESLA    420
+153             308          TESLA    502
+154             322          TESLA   1669
+155             330          TESLA    313
+156             337          TESLA     72
+
+[157 rows x 3 columns]
+add Codeadd Markdown
+import matplotlib.pyplot as plt
+import seaborn as sns
+​
+# set the style of the plot
+sns.set_style('darkgrid')
+​
+# create the scatter plot
+plt.figure(figsize=(10, 8))
+sns.scatterplot(x='Electric Range', y='Make', size='Count', hue='Count', data=df_counts)
+plt.title('Electric Range vs Make')
+plt.xlabel('Electric Range (miles)')
+plt.ylabel('Make')
+plt.show()
+
+add Codeadd Markdown
+import seaborn as sns
+​
+# create scatter plot with count as the size of points
+sns.scatterplot(data=df_counts, x='Electric Range', y='Make', size='Count', sizes=(10, 200))
+plt.title('Counts of Electric Vehicles by Range and Make')
+plt.xlabel('Electric Range')
+plt.ylabel('Make')
+plt.show()
+
+add Codeadd Markdown
+import seaborn as sns
+​
+# create a density plot for each make
+sns.kdeplot(data=df, x='Electric Range', hue='Make', multiple='stack', warn_singular=False)
+​
+# set the title and axis labels
+plt.title('Density Plot of Electric Range by Make')
+#plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+​
+plt.xlabel('Electric Range')
+plt.ylabel('Density')
+​
+# show the plot
+plt.show()
+
+add Codeadd Markdown
+import seaborn as sns import matplotlib.pyplot as plt
+
+create a density plot for each make
+sns.kdeplot(data=df, x='Electric Range', hue='Make', multiple='fill',warn_singular=False)
+
+set the title and axis labels
+plt.title('Density Plot of Electric Range by Make') plt.xlabel('Electric Range') plt.ylabel('Density')
+
+set the x-axis range
+plt.xlim(0,150) plt.ylim(0, 0.5)
+
+show the legend and the plot
+plt.legend( #bbox_to_anchor=(1.05, 1), loc='upper left' ) plt.show()
+
+add Codeadd Markdown
+# create a correlation matrix
+corr_matrix = df.corr()
+​
+# create a heatmap of the correlation matrix
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm')
+​
+# show the plot
+plt.show()
+
+add Codeadd Markdown
+​
+​
+# create a box plot of the Electric Range variable
+sns.boxplot(x='Electric Range', data=df)
+​
+# set the title and axis labels
+plt.title('Box Plot of Electric Range')
+plt.xlabel('Electric Range')
+​
+# show the plot
+plt.show()
+
+add Codeadd Markdown
+​
+#plt.figure(figsize=(10,12))
+#sns.scatterplot(x='Electric Utility', y='Electric Range', data=df)
+#plt.xlabel('Electric Range')
+#plt.xticks(rotation=90)
+#plt.ylabel('Electric Utility')
+#plt.title('Electric Range vs. Electric Utility')
+#plt.show()
+add Codeadd Markdown
+# group by Make and Electric Range and aggregate the counts
+df_grouped = df.groupby(['Make', 'Clean Alternative Fuel Vehicle (CAFV) Eligibility']).agg({'Electric Vehicle Type': 'count'}).reset_index()
+​
+# create a pivot table to reshape the data for plotting
+df_pivot = df_grouped.pivot(index='Make', columns='Clean Alternative Fuel Vehicle (CAFV) Eligibility', values='Electric Vehicle Type')
+​
+# create the grouped bar chart
+ax = df_pivot.plot(kind='bar', figsize=(12,8))
+ax.set_xlabel('Make')
+ax.set
+ax.set_ylabel('Count')
+ax.set_title('Electric Vehicle Counts by Make and Electric Range')
+plt.show()
+
+add Codeadd Markdown
+​
+add Codeadd Markdown
+import pandas as pd from scipy import stats
+
+filter the data to include only CAFV and non-CAFV vehicles
+cafvs = df[df['Clean Alternative Fuel Vehicle (CAFV) Eligibility'] == 'Eligible for CA HOV Incentive'] non_cafvs = df[df['Clean Alternative Fuel Vehicle (CAFV) Eligibility'] != 'Eligible for CA HOV Incentive']
+
+perform two-sample t-test
+t_stat, p_val = stats.ttest_ind(cafvs['Electric Range'], non_cafvs['Electric Range'], equal_var=False)
+
+print("t-statistic:", t_stat) print("p-value:", p_val)
+
+add Codeadd Markdown
+import pandas as pd from scipy import stats
+
+perform ANOVA test
+anova = stats.f_oneway(*[group['Electric Range'] for name, group in df.groupby('Make')])
+
+print("F-statistic:", anova.statistic) print("p-value:", anova.pvalue)
+
+add Codeadd Markdown
+This indicates that there is a significant difference in the mean electric range of vehicles from different manufacturers, as the F-statistic is large and the p-value is very small (less than 0.05).
+
+add Codeadd Markdown
+import pandas as pd
+from scipy import stats
+​
+# create a contingency table of Electric Vehicle Type vs. County
+contingency_table = pd.crosstab(df['Electric Vehicle Type'], df['County'])
+​
+# perform chi-squared test
+chi2, p_val, dof, expected = stats.chi2_contingency(contingency_table)
+​
+print("Chi-square statistic:", chi2)
+print("p-value:", p_val)
+Chi-square statistic: 1219.4936578932288
+p-value: 5.77244247631794e-173
+add Codeadd Markdown
+​
+add Codeadd Markdown
+The chi-square statistic and its associated p-value are a measure of the degree of association between the two categorical variables "County" and "Electric Vehicle Type".
+
+The chi-square statistic in this case is 1219.49, which is a large value, indicating that there is a significant difference between the observed and expected frequencies of electric vehicle types in different counties.
+
+The p-value associated with this statistic is 5.77e-173, which is much smaller than the typical significance level of 0.05, indicating strong evidence against the null hypothesis of independence between the two variables. Therefore, we can conclude that there is a significant association between the county and the type of electric vehicle, and the proportion of all-electric vehicles is significantly different in different counties.
+
+add Codeadd Markdown
+# making it easy to identify which features have the most missing data.
+missing_percentage = (df.isnull().sum().sort_values(ascending = False)/len(df))*100
+missing_percentage
+Electric Utility                                     0.437226
+Legislative District                                 0.268237
+Vehicle Location                                     0.028165
+City                                                 0.002682
+Postal Code                                          0.002682
+2020 Census Tract                                    0.002682
+County                                               0.002682
+VIN (1-10)                                           0.000000
+Base MSRP                                            0.000000
+Year                                                 0.000000
+DOL Vehicle ID                                       0.000000
+Clean Alternative Fuel Vehicle (CAFV) Eligibility    0.000000
+Electric Range                                       0.000000
+Electric Vehicle Type                                0.000000
+Model                                                0.000000
+Make                                                 0.000000
+Model Year                                           0.000000
+State                                                0.000000
+Age                                                  0.000000
+dtype: float64
+add Codeadd Markdown
+df['Electric Utility'] = df['Electric Utility'].fillna('Utility Not Avalilable')
+df['Legislative District'] = df['Legislative District'].fillna('Unknown')
+df['Vehicle Location'] = df['Vehicle Location'].fillna('Unknown')
+df['2020 Census Tract'] = df['2020 Census Tract'].fillna('Unknown')
+df['City'] = df['City'].fillna('Unknown')
+# fill null values in the 'Postal Code' column with the mean salary
+mean_postcode = df['Postal Code'].mean()
+df['Postal Code'] = df['Postal Code'].fillna(mean_postcode)
+df['County'] = df['County'].fillna('Unknown')
+add Codeadd Markdown
+# making it easy to identify which features have the most missing data.
+missing_percentage1 = (df.isnull().sum().sort_values(ascending = False)/len(df))*100
+missing_percentage1
+VIN (1-10)                                           0.0
+Electric Range                                       0.0
+Year                                                 0.0
+2020 Census Tract                                    0.0
+Electric Utility                                     0.0
+Vehicle Location                                     0.0
+DOL Vehicle ID                                       0.0
+Legislative District                                 0.0
+Base MSRP                                            0.0
+Clean Alternative Fuel Vehicle (CAFV) Eligibility    0.0
+County                                               0.0
+Electric Vehicle Type                                0.0
+Model                                                0.0
+Make                                                 0.0
+Model Year                                           0.0
+Postal Code                                          0.0
+State                                                0.0
+City                                                 0.0
+Age                                                  0.0
+dtype: float64
+add Codeadd Markdown
+# convert the 'Postal Code ' attribute from float to integer
+df['Postal Code'] = df['Postal Code'].astype(int)
+display(df.info())
+​
+<class 'pandas.core.frame.DataFrame'>
+Int64Index: 74561 entries, 0 to 121976
+Data columns (total 19 columns):
+ #   Column                                             Non-Null Count  Dtype 
+---  ------                                             --------------  ----- 
+ 0   VIN (1-10)                                         74561 non-null  object
+ 1   County                                             74561 non-null  object
+ 2   City                                               74561 non-null  object
+ 3   State                                              74561 non-null  object
+ 4   Postal Code                                        74561 non-null  int64 
+ 5   Model Year                                         74561 non-null  object
+ 6   Make                                               74561 non-null  object
+ 7   Model                                              74561 non-null  object
+ 8   Electric Vehicle Type                              74561 non-null  object
+ 9   Clean Alternative Fuel Vehicle (CAFV) Eligibility  74561 non-null  object
+ 10  Electric Range                                     74561 non-null  int64 
+ 11  Base MSRP                                          74561 non-null  int64 
+ 12  Legislative District                               74561 non-null  object
+ 13  DOL Vehicle ID                                     74561 non-null  int64 
+ 14  Vehicle Location                                   74561 non-null  object
+ 15  Electric Utility                                   74561 non-null  object
+ 16  2020 Census Tract                                  74561 non-null  object
+ 17  Year                                               74561 non-null  object
+ 18  Age                                                74561 non-null  int64 
+dtypes: int64(5), object(14)
+memory usage: 13.4+ MB
+None
+add Codeadd Markdown
+df = df.rename(columns={'Postal Code': 'PostalCode', 'Model Year': 'ModelYear','Electric Vehicle Type': 'Electric_Vehicle_Type',
+'Clean Alternative Fuel Vehicle (CAFV) Eligibility':'CAFV_Eligibility','Electric Range':'Electric_Range', 'Base MSRP':'Base_MSRP', 'Legislative District':'Legislative_District',
+'DOL Vehicle ID': 'DOL_Vehicle_ID','Vehicle Location':'Vehicle_Location','Electric Utility':'Electric_Utility','2020 Census Tract':'2020_Census_Tract','VIN (1-10)':'VIN'})
+print(df.columns)
+display(df.info())
+Index(['VIN', 'County', 'City', 'State', 'PostalCode', 'ModelYear', 'Make',
+       'Model', 'Electric_Vehicle_Type', 'CAFV_Eligibility', 'Electric_Range',
+       'Base_MSRP', 'Legislative_District', 'DOL_Vehicle_ID',
+       'Vehicle_Location', 'Electric_Utility', '2020_Census_Tract', 'Year',
+       'Age'],
+      dtype='object')
+<class 'pandas.core.frame.DataFrame'>
+Int64Index: 74561 entries, 0 to 121976
+Data columns (total 19 columns):
+ #   Column                 Non-Null Count  Dtype 
+---  ------                 --------------  ----- 
+ 0   VIN                    74561 non-null  object
+ 1   County                 74561 non-null  object
+ 2   City                   74561 non-null  object
+ 3   State                  74561 non-null  object
+ 4   PostalCode             74561 non-null  int64 
+ 5   ModelYear              74561 non-null  object
+ 6   Make                   74561 non-null  object
+ 7   Model                  74561 non-null  object
+ 8   Electric_Vehicle_Type  74561 non-null  object
+ 9   CAFV_Eligibility       74561 non-null  object
+ 10  Electric_Range         74561 non-null  int64 
+ 11  Base_MSRP              74561 non-null  int64 
+ 12  Legislative_District   74561 non-null  object
+ 13  DOL_Vehicle_ID         74561 non-null  int64 
+ 14  Vehicle_Location       74561 non-null  object
+ 15  Electric_Utility       74561 non-null  object
+ 16  2020_Census_Tract      74561 non-null  object
+ 17  Year                   74561 non-null  object
+ 18  Age                    74561 non-null  int64 
+dtypes: int64(5), object(14)
+memory usage: 13.4+ MB
+None
+add Codeadd Markdown
+df.columns.unique()
+Index(['VIN', 'County', 'City', 'State', 'PostalCode', 'ModelYear', 'Make',
+       'Model', 'Electric_Vehicle_Type', 'CAFV_Eligibility', 'Electric_Range',
+       'Base_MSRP', 'Legislative_District', 'DOL_Vehicle_ID',
+       'Vehicle_Location', 'Electric_Utility', '2020_Census_Tract', 'Year',
+       'Age'],
+      dtype='object')
+add Codeadd Markdown
+df['Base_MSRP'].unique()
+array([     0,  45600,  31950,  39995,  33950,  69900,  52900, 110950,
+        54950,  36900,  59900,  55700,  64950,  32250, 184400,  36800,
+        34995,  53400,  52650,  98950,  44100,  81100,  90700,  75095,
+        43700,  89100, 102000,  91250, 109000,  32995, 845000])
+add Codeadd Markdown
+def categorize_electric_utility(value):
+    if value == "Utility Not Avalilable":
+        return "Not Available"
+    elif "||" in value:
+        return "Multi type Utilities"
+    elif "|" in value:
+        return "Single Type Utilities"
+    else:
+        return "Only One Option"
+​
+df['Electric_Utility_Category'] = df['Electric_Utility'].apply(categorize_electric_utility)
+add Codeadd Markdown
+df['Electric_Utility_Category'].unique()
+array(['Not Available', 'Only One Option', 'Single Type Utilities',
+       'Multi type Utilities'], dtype=object)
+add Codeadd Markdown
+cnt_MkCity = df.groupby(['City', 'Make']).size().reset_index(name='Count')
+# Group the data by county and make, and sum the counts for each group
+grouped_data_cty = cnt_MkCity.groupby(['City', 'Make'])['Count'].sum().reset_index()
+​
+# Group the data by county and sum the counts for each county
+city_counts = grouped_data_cty.groupby('City')['Count'].sum().reset_index()
+make_counts = grouped_data_cty.groupby('Make')['Count'].sum().reset_index()
+​
+# Sort the counties by count in descending order, and select the top 10
+top_cities = city_counts.sort_values(by='Count', ascending=False).head(10)
+top_makes = make_counts.sort_values(by='Count', ascending=False).head(10)
+​
+# Filter the data to only include the top 10 counties
+filtered_data_Cty = grouped_data_cty[grouped_data_cty['City'].isin(top_cities['City']) & 
+                                     grouped_data_cty['Make'].isin(top_makes['Make'])]
+​
+# Pivot the data to create a matrix with counties as rows, makes as columns, and counts as values
+pivoted_data_cty = filtered_data_Cty.pivot(index='City', columns='Make',values='Count').fillna(0)
+​
+# Create a stacked bar plot of the pivoted data
+pivoted_data_cty.plot(kind='bar', stacked=True)
+​
+# Set the title and axis labels
+plt.title('Top 10 Make distribution count per top 10 City')
+plt.xlabel('City')
+plt.ylabel('Number of Cars')
+​
+# Show the plot
+plt.show()
+pivoted_data_cty.head()
+
+Make	AUDI	BMW	CHEVROLET	CHRYSLER	FORD	JEEP	KIA	NISSAN	TESLA	TOYOTA
+City										
+Bellevue	83	298	182	49	79	49	90	436	1830	144
+Bothell	39	121	149	61	72	31	62	319	833	74
+Kirkland	79	176	141	42	60	29	70	264	1106	70
+Olympia	41	71	411	50	122	41	117	312	450	173
+Redmond	52	183	156	51	55	43	72	375	1229	101
+add Codeadd Markdown
+cnt_MkCounty = df.groupby(['County', 'Make']).size().reset_index(name='Count')
+# Group the data by county and make, and sum the counts for each group
+grouped_data = cnt_MkCounty.groupby(['County', 'Make'])['Count'].sum().reset_index()
+# Group the data by county and sum the counts for each county
+county_counts = grouped_data.groupby('County')['Count'].sum().reset_index()
+make_counts = grouped_data.groupby('Make')['Count'].sum().reset_index()
+# Sort the counties by count in descending order, and select the top 10
+top_counties = county_counts.sort_values(by='Count', ascending=False).head(10)
+top_makes = make_counts.sort_values(by='Count', ascending=False).head(10)
+# Filter the data to only include the top 10 counties
+filtered_data = grouped_data[grouped_data['County'].isin(top_counties['County']) & grouped_data['Make'].isin(top_makes['Make'])]
+# Pivot the data to create a matrix with counties as rows, makes as columns,and counts as values
+pivoted_data = filtered_data.pivot(index='County', columns='Make',values='Count').fillna(0)
+# Create a stacked bar plot of the pivoted data
+pivoted_data.plot(kind='bar', stacked=True)
+# Set the title and axis labels
+plt.title('Top 10 Make distribution count per top 10 County')
+plt.xlabel('County')
+plt.ylabel('Number of Cars')
+# Show the plot
+plt.show()
+pivoted_data.head()
+
+Make	AUDI	BMW	CHEVROLET	CHRYSLER	FORD	JEEP	KIA	NISSAN	TESLA	TOYOTA
+County										
+Benton	14	59	171	36	91	27	21	102	308	84
+Clark	86	262	579	107	266	165	154	674	1331	484
+Island	23	36	164	16	69	23	50	120	281	68
+King	1099	2802	3252	893	1469	698	1300	5368	14856	1794
+Kitsap	70	177	380	77	164	75	130	497	685	174
+add Codeadd Markdown
+cnt_Mk_St = df.groupby(['State', 'Make']).size().reset_index(name='Count')
+# Group the data by county and make, and sum the counts for each group
+grouped_data_St = cnt_Mk_St.groupby(['State', 'Make'])['Count'].sum().reset_index()
+# Group the data by county and sum the counts for each county
+st_counts = grouped_data_St.groupby('State')['Count'].sum().reset_index()
+make_counts = grouped_data_St.groupby('Make')['Count'].sum().reset_index()
+# Sort the counties by count in descending order, and select the top 10
+top_States = st_counts.sort_values(by='Count', ascending=False).head(10)
+top_makes = make_counts.sort_values(by='Count', ascending=False).head(10)
+# Filter the data to only include the top 10 counties
+filtered_data_St = grouped_data_St[grouped_data_St['State'].isin(top_States['State']) & grouped_data_St['Make'].isin(top_makes['Make'])]
+# Pivot the data to create a matrix with counties as rows, makes as columns,and counts as values
+pivoted_data_St = filtered_data_St.pivot(index='State', columns='Make',values='Count').fillna(0)
+# Create a stacked bar plot of the pivoted data
+pivoted_data_St.plot(kind='bar', stacked=True)
+# Set the title and axis labels
+plt.title('Top 10 Make distribution count per top 10 State')
+plt.yscale('log')
+plt.xlabel('State')
+plt.ylabel('Number of Cars')
+# Show the plot
+plt.show()
+pivoted_data_St.head(10)
+
+Make	AUDI	BMW	CHEVROLET	CHRYSLER	FORD	JEEP	KIA	NISSAN	TESLA	TOYOTA
+State										
+CA	1.0	1.0	2.0	1.0	6.0	0.0	1.0	1.0	23.0	5.0
+CO	0.0	1.0	1.0	1.0	0.0	0.0	0.0	0.0	2.0	0.0
+CT	0.0	0.0	2.0	1.0	1.0	0.0	0.0	0.0	1.0	1.0
+FL	0.0	0.0	0.0	0.0	1.0	0.0	0.0	0.0	2.0	2.0
+IL	0.0	0.0	0.0	1.0	0.0	0.0	0.0	0.0	4.0	0.0
+MD	1.0	1.0	2.0	2.0	1.0	0.0	0.0	1.0	5.0	2.0
+NC	0.0	1.0	1.0	1.0	0.0	0.0	1.0	0.0	1.0	1.0
+TX	0.0	0.0	0.0	0.0	3.0	0.0	0.0	0.0	5.0	2.0
+VA	0.0	3.0	3.0	2.0	3.0	1.0	1.0	2.0	12.0	3.0
+WA	1807.0	4719.0	8661.0	1874.0	3903.0	1671.0	2796.0	11054.0	25616.0	4494.0
+add Codeadd Markdown
+## EVT Distribution count per state
+evt_Dis_cnt = df.groupby(['State', 'Electric_Vehicle_Type']).size().reset_index(name='Count')
+evt_Dis_cnt.groupby(['State', 'Electric_Vehicle_Type'])['Count'].count().unstack().plot(kind='bar', stacked=True)
+# Move legend outside of plot
+plt.legend(bbox_to_anchor=(1.01, 1), loc='upper left')
+plt.show()
+evt_Dis_cnt.head(10).sort_values(by='Count', ascending=False)
+
+State	Electric_Vehicle_Type	Count
+7	CA	Battery Electric Vehicle (BEV)	26
+8	CA	Plug-in Hybrid Electric Vehicle (PHEV)	23
+9	CO	Battery Electric Vehicle (BEV)	4
+3	AR	Battery Electric Vehicle (BEV)	2
+4	AZ	Battery Electric Vehicle (BEV)	2
+5	AZ	Plug-in Hybrid Electric Vehicle (PHEV)	2
+6	BC	Battery Electric Vehicle (BEV)	2
+0	AK	Plug-in Hybrid Electric Vehicle (PHEV)	1
+1	AL	Battery Electric Vehicle (BEV)	1
+2	AL	Plug-in Hybrid Electric Vehicle (PHEV)	1
+add Codeadd Markdown
+cnt_Cty_EUD = df.groupby(['City', 'Electric_Utility_Category']).size().reset_index(name='Count')
+# Group the data by county and make, and sum the counts for each group
+grouped_data_Cty_EUD = cnt_Cty_EUD.groupby(['City','Electric_Utility_Category'])['Count'].sum().reset_index()
+# Group the data by county and sum the counts for each county
+Cty_EUD_counts = grouped_data_Cty_EUD.groupby('City')['Count'].sum().reset_index()
+# make_counts = grouped_data_St.groupby('Make')['Count'].sum().reset_index()
+# Sort the counties by count in descending order, and select the top 10
+top_Cty_EUD_counts = Cty_EUD_counts.sort_values(by='Count', ascending=False).head(30)
+# top_makes = make_counts.sort_values(by='Count', ascending=False).head(10)
+# Filter the data to only include the top 10 counties
+filtered_data_Cty_EUD = grouped_data_Cty_EUD[grouped_data_Cty_EUD['City'].isin(top_Cty_EUD_counts['City'])]
+# Pivot the data to create a matrix with counties as rows, makes as columns, and counts as values
+pivoted_data_Cty_EUD = filtered_data_Cty_EUD.pivot(index='City',columns='Electric_Utility_Category', values='Count').fillna(0)
+# Create a stacked bar plot of the pivoted data
+pivoted_data_Cty_EUD.plot(kind='bar', stacked=True)
+# Set the title and axis labels
+plt.title('Electric Utility Distribution in top 10 cities with highest number of cars')
+# plt.yscale('log')
+plt.xlabel('City')
+plt.ylabel('Number of EUC')
+# Show the plot
+plt.show()
+pivoted_data_Cty_EUD.head(10)
+
+Electric_Utility_Category	Multi type Utilities	Not Available	Only One Option	Single Type Utilities
+City				
+Auburn	744.0	0.0	0.0	0.0
+Bainbridge Island	0.0	10.0	875.0	0.0
+Bellevue	3569.0	0.0	0.0	0.0
+Bellingham	1469.0	0.0	3.0	0.0
+Bothell	468.0	0.0	1464.0	0.0
+Bremerton	0.0	0.0	557.0	0.0
+Camas	662.0	0.0	0.0	0.0
+Edmonds	0.0	2.0	856.0	0.0
+Everett	2.0	0.0	1009.0	0.0
+Federal Way	537.0	0.0	0.0	0.0
+add Codeadd Markdown
+car_market_share = pd.DataFrame(df.groupby('Make')['VIN'].count().reset_index()).sort_values(by='VIN',ascending=False).reset_index(drop=True)
+car_market_share.columns = ['model','count']
+car_market_share_top_5 = car_market_share.head(5)
+car_market_share_bottom_5 = car_market_share.tail(5)
+fig, axes = plt.subplots(1, 2, figsize=(20, 5))
+sns.barplot(data=car_market_share_top_5, x="model", y="count",ax=axes[0])
+sns.barplot(data=car_market_share_bottom_5, x="model", y="count",ax=axes[1])
+axes[0].set_title('Top 5 Cars')
+axes[1].set_title('Bottom 5 Cars')
+Text(0.5, 1.0, 'Bottom 5 Cars')
+
+add Codeadd Markdown
+import plotly.express as ps
+km_range = pd.DataFrame(df.groupby('Make')['Electric_Range'].mean().reset_index()).sort_values(by='Electric_Range',ascending=False).reset_index(drop=True).head(10)
+km_range.columns = ['model','km_range']
+ps.pie(data_frame=km_range, names='model', values='km_range',hover_name='km_range',title='Top 10 Model with KM range',hole=True)
+add Codeadd Markdown
+# Year Wise Cars
+year_wise_cars = df.groupby('ModelYear')['VIN'].count().reset_index()
+year_wise_cars.columns = ['year','num_cars']
+fig = ps.line(year_wise_cars,x="year", y="num_cars", title='Year Wise Number of Cars',markers=True)
+fig.show()
+year_wise_cars.sort_values(by='num_cars', ascending=False).head(10)
+year	num_cars
+15	2018	14344
+17	2020	10889
+16	2019	10422
+14	2017	8570
+13	2016	5682
+12	2015	4944
+10	2013	4623
+18	2021	4024
+19	2022	3953
+11	2014	3636
+add Codeadd Markdown
+df['lat'] = df['Vehicle_Location'].str.split(' ').str[1].str.split('(').str[1].astype(float)
+df['lon'] = df['Vehicle_Location'].str.split(' ').str[2].str.split(')').str[0].astype(float)
+df['lat'] = df['lat'].fillna(0)
+df['lon'] = df['lon'].fillna(0)
+add Codeadd Markdown
+geometry = [Point(xy) for xy in zip(df['lat'], df['lon'])]
+gdf = GeoDataFrame(df, geometry=geometry)
+#this is a simple map that goes with geopandas
+world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+gdf.plot(ax=world.plot(figsize=(10, 6)), marker='o', color='red',markersize=15);
